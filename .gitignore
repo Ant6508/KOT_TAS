@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Copie locale de frida-server : telechargee au premier lancement (116 Mo)
+frida-server/
+
+# Les films que tu poses restent chez toi
+films/*
+!films/.gitkeep
