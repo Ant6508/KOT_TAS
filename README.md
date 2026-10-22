@@ -43,7 +43,7 @@ résolution sur laquelle il a été testé.
 **Vérification :** après le redémarrage, les paramètres de MEmu montrent
 toujours le mode Root activé et 1600 × 900.
 
-### 2. King of Thieves 2.84
+### 2. King of Thieves 2.84.1
 
 1. Dans MEmu, ouvre le **Play Store**, connecte-toi avec un compte Google et
    installe **King of Thieves**.
@@ -51,9 +51,9 @@ toujours le mode Root activé et 1600 × 900.
    ses données.
 
 **Vérification :** dans MEmu, *Paramètres* Android → *Applications* →
-*King of Thieves* : la version affichée doit être **2.84**.
+*King of Thieves* : la version affichée doit être **2.84.1**.
 
-L'outil est lié à cette version exacte (versionCode 4755781) : il lit la
+L'outil est lié à cette version exacte (versionCode 4755794) : il lit la
 mémoire du jeu à des adresses relevées sur la 2.84. Avec une autre version, il
 refuse de démarrer plutôt que de lire n'importe quoi. Si le Play Store
 installe une version plus récente, l'outil ne marchera pas tant que ces
@@ -264,11 +264,11 @@ deux cas, relance ensuite :
 | `adb introuvable (...)` | MEmu n'est pas installé, ou installé d'une façon que l'outil ne reconnaît pas | Installe MEmu (étape 1). Sinon, ajoute au PATH le dossier qui contient `adb.exe` (dans le dossier de MEmu, sous-dossier `MEmu`) |
 | `aucun appareil adb connecte : lance MEmu.` | MEmu est fermé, ou pas encore démarré | Lance MEmu, attends l'écran d'accueil, réessaie |
 | `plusieurs appareils adb connectes (...)` | Plusieurs instances MEmu sont ouvertes | Ferme celles qui ne servent pas, ou pose `KOT_SERIAL` (voir [Plusieurs instances MEmu](#plusieurs-instances-memu)) |
-| `version de jeu inattendue : ...` | King of Thieves n'est pas en 2.84 | L'outil ne marche qu'avec la 2.84 (voir [Limites](#limites)) |
+| `version de jeu inattendue : ...` | King of Thieves n'est pas en 2.84.1 | L'outil ne marche qu'avec la 2.84.1 (voir [Limites](#limites)) |
 | `com.zeptolab.thieves.google ne tourne pas. Lance le jeu dans MEmu.` | Le jeu est fermé | Lance King of Thieves dans MEmu |
 | `frida-server 17.18.0 absent et impossible a telecharger` | Pas d'internet, ou GitHub injoignable | Vérifie ta connexion et réessaie. Sinon, suis les instructions du message : télécharge l'archive à la main, décompresse-la avec 7-Zip, range le fichier à l'endroit indiqué |
 | `attache impossible apres 15 essais`, avec `frida-server` ou `closed` dans la dernière erreur | frida-server ne démarre pas : mode Root désactivé, ou ancien frida-server d'une autre version resté dans MEmu | Vérifie le mode Root (étape 1). Sinon, redémarre MEmu puis, dans un terminal, `& "C:\Program Files\Microvirt\MEmu\adb.exe" shell rm /data/local/tmp/frida-server` (adapte le chemin si MEmu est installé ailleurs) : l'outil réinstallera la bonne version |
-| `l'agent refuse de demarrer. Symboles absents ou offsets invalides` | Juste après une relance, c'est normal : l'outil réessaie seul. Si ça persiste, le jeu n'est pas exactement la 2.84 | Vérifie la version du jeu (étape 2) |
+| `l'agent refuse de demarrer. Symboles absents ou offsets invalides` | Juste après une relance, c'est normal : l'outil réessaie seul. Si ça persiste, le jeu n'est pas exactement la 2.84.1 | Vérifie la version du jeu (étape 2) |
 | Les tests de l'étape 6 échouent | Installation incomplète | Refais l'étape 5, puis l'étape 6 |
 
 ## Limites
