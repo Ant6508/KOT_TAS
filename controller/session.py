@@ -3,6 +3,7 @@
 Refuse de demarrer si la version installee n'est pas celle attendue : un agent
 qui pointe sur de mauvaises adresses fait plus de degats qu'un agent qui ne
 demarre pas.
+Version et adresses : la table du noyau (kotnoyau).
 """
 
 from __future__ import annotations
@@ -11,6 +12,8 @@ import threading
 import time
 
 import frida
+from kotnoyau.frida_ import charger_agent
+from kotnoyau.table import Table, VersionInconnue
 
 from controller.agent import build_agent_source
 from controller.device import (
@@ -24,8 +27,11 @@ from controller.device import (
     message_frida_discordant,
 )
 
-EXPECTED_VERSION_CODE = 4755781
-EXPECTED_VERSION_NAME = "2.84"
+
+def version_attendue() -> tuple[str, int]:
+    """(versionName, versionCode) de la table la plus recente du noyau : la version des films enregistres."""
+    t = Table.derniere()
+    return t.nom, t.code
 
 
 class SessionError(Exception):
@@ -37,6 +43,7 @@ class Session:
         self.package = package
         self.session: frida.core.Session | None = None
         self.script: frida.core.Script | None = None
+        self.table: Table | None = None
         self._heartbeat_stop = threading.Event()
         self._heartbeat_thread: threading.Thread | None = None
 
@@ -51,17 +58,16 @@ class Session:
             raise SessionError(discordance)
 
     def check_version(self) -> None:
+        """La table d'adresses du jeu installe, ou un refus avant toute attache."""
         name, code = installed_version(self.package)
-        if code != EXPECTED_VERSION_CODE:
-            raise SessionError(
-                f"version de jeu inattendue : {name} (versionCode {code}), "
-                f"attendu {EXPECTED_VERSION_NAME} (versionCode "
-                f"{EXPECTED_VERSION_CODE}). Les symboles et offsets releves "
-                f"dans NOTES.md ne valent que pour la version attendue."
-            )
+        try:
+            self.table = Table.pour(code, name)
+        except VersionInconnue as exc:
+            raise SessionError(str(exc)) from exc
 
     def _attach_to(self, device):
-        """Attache par nom, puis par pid. Voir NOTES.md : le nom ne suffit pas.
+        """Attache par nom, puis par pid. Voir kot_headless/docs/savoir/methodes/frida.md :
+        le nom ne suffit pas.
 
         Un DeviceError qui n'est pas GameNotRunning vient d'un echec adb
         (hors ligne, non autorise, serveur adb mort...) : on le laisse
@@ -96,7 +102,7 @@ class Session:
         device = frida.get_device(active_serial(), timeout=5)
         self.session = self._attach_to(device)
 
-        self.script = self.session.create_script(build_agent_source())
+        self.script = self.session.create_script(charger_agent(build_agent_source(), self.table))
         self.script.on("message", self._on_message)
         self.script.load()
 

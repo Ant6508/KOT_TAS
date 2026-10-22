@@ -60,9 +60,8 @@ from controller.movie import (  # noqa: E402
 from controller.relance import relancer  # noqa: E402
 from controller.run import AncrageError, Run, derouler  # noqa: E402
 from controller.session import (  # noqa: E402
-    EXPECTED_VERSION_CODE,
-    EXPECTED_VERSION_NAME,
     Session,
+    version_attendue,
 )
 from controller.solveur import (  # noqa: E402
     RAYON_PRECEDENT,
@@ -554,8 +553,8 @@ class Seance:
                 f"{len(au_dela)} saut(s) apres l'image {self.longueur} ou le "
                 f"run s'arrete : {au_dela}. Avance jusque-la, ou retire-les.")
 
-        # Ni la victoire ni la mort ne sont observables (NOTES.md du
-        # 2026-09-18 : un heros tue reste en memoire). C'est l'operateur qui
+        # Ni la victoire ni la mort ne sont observables (kot_headless/docs/savoir/jeu/heros.md :
+        # un heros tue reste en memoire). C'est l'operateur qui
         # qualifie son run.
         print()
         reponse = input("issue ? (w)in / (d)eath / (i)ncomplet [i] : ")
@@ -563,8 +562,7 @@ class Seance:
                                                "incomplete")
 
         movie = Movie(
-            game=GameBuild(PACKAGE, EXPECTED_VERSION_NAME,
-                           EXPECTED_VERSION_CODE),
+            game=GameBuild(PACKAGE, *version_attendue()),
             dt=DT,
             run_frames=self.longueur,
             start=StartConditions(relaunch=True, tap_demarrage=True,
